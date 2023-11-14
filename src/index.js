@@ -42,7 +42,7 @@ searchForm.addEventListener("submit", async (e) => {
 });
 
 loadMoreButton.addEventListener("click", () => {
-  page++;
+  
   searchImagesByQuery(searchForm.searchQuery.value, page)
     .then((data) => {
       appendImagesToGallery(data);
@@ -64,9 +64,7 @@ function appendImagesToGallery(data) {
       const card = createImageCard(image);
       gallery.appendChild(card);
     }
-
-    //  page++;
-    
+   
     lightbox.refresh();
   } else {
     Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.");
@@ -74,7 +72,7 @@ function appendImagesToGallery(data) {
 
   if (page * perPage >= totalHits) {
     window.removeEventListener("scroll", infiniteScroll);
-    loadMoreButton.style.display = "none"; 
+    loadMoreButton.style.display = "none";
   }
 }
 
@@ -96,7 +94,7 @@ function createImageCard(image) {
   const card = document.createElement("div");
   card.className = "photo-card";
 
-  const imageLink = document.createElement("a"); 
+  const imageLink = document.createElement("a");
   imageLink.href = image.largeImageURL;
 
   const imageElement = document.createElement("img");
@@ -128,8 +126,8 @@ function createImageCard(image) {
   info.appendChild(comments);
   info.appendChild(downloads);
 
-  imageLink.appendChild(imageElement); 
-  card.appendChild(imageLink); 
+  imageLink.appendChild(imageElement);
+  card.appendChild(imageLink);
   card.appendChild(info);
 
   return card;
@@ -148,8 +146,16 @@ function infiniteScroll() {
   const threshold = 200;
 
   if (scrollPosition >= documentHeight - threshold) {
-    page++;
-    loadMoreImages();
+     searchImagesByQuery(searchForm.searchQuery.value, page + 1)
+      .then((data) => {
+        appendImagesToGallery(data);
+        // Increment the page variable
+        page++;
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        Notiflix.Notify.failure("Something went wrong. Please try again later.");
+      });
   }
 }
 
@@ -163,3 +169,8 @@ function loadMoreImages() {
       Notiflix.Notify.failure("Something went wrong. Please try again later.");
     });
 }
+
+// main.js
+
+
+// Continue with the event listener for the load more button, infinite scroll, and other functions as needed
