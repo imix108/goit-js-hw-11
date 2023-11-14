@@ -149,7 +149,6 @@ function infiniteScroll() {
      searchImagesByQuery(searchForm.searchQuery.value, page + 1)
       .then((data) => {
         appendImagesToGallery(data);
-        // Increment the page variable
         page++;
       })
       .catch((error) => {
@@ -170,7 +169,4 @@ function loadMoreImages() {
     });
 }
 
-// main.js
 
-
-// Continue with the event listener for the load more button, infinite scroll, and other functions as needed
