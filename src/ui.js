@@ -1,15 +1,16 @@
-// ui.js
 import Notiflix from "notiflix";
 import simpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
+
+const lightbox = new simpleLightbox(".photo-card a", { nav: true });
+lightbox.refresh();
 
 export function showNotification(message, type) {
   Notiflix.Notify[type](message);
 }
 
 export function createImageCard(image) {
-    // Implementation of createImageCard function
-     const card = document.createElement("div");
+   const card = document.createElement("div");
   card.className = "photo-card";
 
   const imageLink = document.createElement("a");
@@ -53,7 +54,7 @@ export function createImageCard(image) {
 
 export function appendImagesToGallery(data, gallery, page, totalHits) {
     // Implementation of appendImagesToGallery function
-    const perPage = 40;
+     const perPage = 40;
   const startIndex = (page - 1) * perPage;
     const endIndex = Math.min(startIndex + perPage, data.hits.length);
 
@@ -63,9 +64,7 @@ export function appendImagesToGallery(data, gallery, page, totalHits) {
       const card = createImageCard(image);
       gallery.appendChild(card);
     }
-
-     page++;
-    
+   
     lightbox.refresh();
   } else {
     Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.");
@@ -77,17 +76,13 @@ export function appendImagesToGallery(data, gallery, page, totalHits) {
   }
 }
 
-export function showLoadingSpinner() {
-  const loadingSpinner = document.querySelector(".loading-spinner");
-  loadingSpinner.style.display = "block";
-}
-
-export function hideLoadingSpinner() {
-  const loadingSpinner = document.querySelector(".loading-spinner");
-  loadingSpinner.style.display = "none";
-}
-
-export function initializeLightbox() {
-  const lightbox = new simpleLightbox(".photo-card a", { nav: true });
-  lightbox.refresh();
+export function loadMoreImages() {
+  searchImagesByQuery(searchForm.searchQuery.value, page)
+    .then((data) => {
+      appendImagesToGallery(data);
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      Notiflix.Notify.failure("Something went wrong. Please try again later.");
+    });
 }
