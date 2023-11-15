@@ -7,10 +7,11 @@ const searchForm = document.getElementById("search-form");
 const gallery = document.querySelector(".gallery");
 const loadMoreButton = document.querySelector(".load-more");
 const lightbox = new simpleLightbox(".photo-card a", { nav: true });
-// lightbox.refresh();
+
 
 let page = 1;
 let totalHits = 0;
+let testPage = 1;
 
 searchForm.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -45,8 +46,8 @@ searchForm.addEventListener("submit", async (e) => {
 });
 
 loadMoreButton.addEventListener("click", () => {
-  
-  searchImagesByQuery(searchForm.searchQuery.value, page)
+  testPage += 1;
+  searchImagesByQuery(searchForm.searchQuery.value, testPage)
     .then((data) => {
       appendImagesToGallery(data);
     })
@@ -138,27 +139,6 @@ function createImageCard(image) {
   return card;
 }
 
-
-// window.addEventListener("scroll", infiniteScroll);
-// function infiniteScroll() {
-//   const scrollPosition = window.scrollY + window.innerHeight;
-//   const documentHeight = document.documentElement.scrollHeight;
-
-  
-//   const threshold = 200;
-
-//   if (scrollPosition >= documentHeight - threshold) {
-//      searchImagesByQuery(searchForm.searchQuery.value, page + 1)
-//       .then((data) => {
-//         appendImagesToGallery(data);
-//         page++;
-//       })
-//       .catch((error) => {
-//         console.error("Error:", error);
-//         Notiflix.Notify.failure("Something went wrong. Please try again later.");
-//       });
-//   }
-// }
 
 function loadMoreImages() {
   searchImagesByQuery(searchForm.searchQuery.value, page)
