@@ -2,6 +2,7 @@ import axios from "axios";
 import simpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
 import Notiflix from "notiflix";
+import { searchImagesByQuery } from "./api.js";
 
 const searchForm = document.getElementById("search-form");
 const gallery = document.querySelector(".gallery");
@@ -56,45 +57,29 @@ loadMoreButton.addEventListener("click", () => {
       Notiflix.Notify.failure("Something went wrong. Please try again later.");
     });
 });
-
-async function searchImagesByQuery(query, pageNumber = 1) {
-  const apiKey = "40531611-c718006264cffa07f6ed617b2";
-  const perPage = 40;
-  const url = `https://pixabay.com/api/?key=${apiKey}&q=${query}&image_type=photo&orientation=horizontal&safesearch=true&page=${pageNumber}&per_page=${perPage}`;
-
-  try {
-    const response = await axios.get(url);
-    const data = response.data;
-    return data;
-  } catch (error) {
-    throw error;
-  }
-}
-
 function appendImagesToGallery(data) {
   const perPage = 40;
   const startIndex = (page - 1) * perPage;
-    const endIndex = Math.min(startIndex + perPage, data.hits.length);
+  const endIndex = Math.min(startIndex + perPage, data.hits.length);
 
   if (data.hits.length > 0) {
-    for (let i = startIndex; i < endIndex; i++)  {
+    for (let i = startIndex; i < endIndex; i++) {
       const image = data.hits[i];
       const card = createImageCard(image);
       gallery.appendChild(card);
     }
-   
+
     lightbox.refresh();
+
+    if (endIndex < 40) {
+      loadMoreButton.style.display = "none";
+    } else {
+      loadMoreButton.style.display = "block";
+    }
   } else {
     Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.");
   }
-
-  if (page * perPage >= totalHits) {
-    window.removeEventListener("scroll", infiniteScroll);
-    loadMoreButton.style.display = "none";
-  }
 }
-
-
 
 function createImageCard(image) {
   const card = document.createElement("div");
@@ -138,7 +123,6 @@ function createImageCard(image) {
 
   return card;
 }
-
 
 function loadMoreImages() {
   searchImagesByQuery(searchForm.searchQuery.value, page)
